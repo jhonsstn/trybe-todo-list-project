@@ -1,15 +1,18 @@
 const newTaskButton = document.getElementById('criar-tarefa');
 
-// Aqui é recuperado o elemento 'ol' do HTML
 const htmlTaskList = document.querySelector('#lista-tarefas');
 
-// Aqui e recuperado o botão que apaga toda a lista de tarefas.
 const clearTasksButton = document.getElementById('apaga-tudo');
 
-// Aqui e recuperado o botão que apaga tarefas marcadas como completadas.
 const clearDoneTasksButton = document.getElementById('remover-finalizados');
 
-// Aqui é declarada a função que altera a cor de fundo dos items da lista que forem clicados 1 vez e remove a cor de fundo dos outros.
+// Função que é utilizada para recuperar a 'ol' de forma que ela esteja sempre atualizada com as ultimas 'li'.
+function getUpdatedTaskList() {
+  const UpdatedTaskList = document.querySelectorAll('.todo-item');
+  return UpdatedTaskList;
+}
+
+// Aqui é declarada a função que altera/remove o 'background-color' dos itens da lista.
 function grayBgColor(element, index, array) {
   element.addEventListener('click', (e) => {
     for (let i = 0; i < array.length; i += 1) {
@@ -20,7 +23,7 @@ function grayBgColor(element, index, array) {
   });
 }
 
-// Aqui é declarada a função que adiciona a classe que adiciona/remove a linha através dos itens que forem clicados 2 vezes.
+// Aqui é declarada a função que adiciona/remove a classe 'completed' aos itens da ol.
 function lineThrough(e) {
   if (e.target.classList.contains('completed')) {
     e.target.classList.remove('completed');
@@ -29,8 +32,8 @@ function lineThrough(e) {
   }
 }
 
-// Aqui é declarada a função que cria os item e os adiciona dentro da 'ol'.
-function createAndAddItem(value) {
+// Aqui é declarada a função que cria a 'li' com o valor fornecido e a anexa a 'ol'.
+function createItem(value) {
   const taskElement = document.createElement('li');
   taskElement.innerText = value;
   taskElement.className = 'todo-item';
@@ -38,32 +41,35 @@ function createAndAddItem(value) {
   htmlTaskList.append(taskElement);
 }
 
+// Aqui é declarada a função que recupera o valor da caixa de texto e o passa para a função responsavel por criar a li e a anexar a ol.
 function addNewTask() {
   const inputValue = document.getElementById('texto-tarefa').value;
-  createAndAddItem(inputValue);
+  createItem(inputValue);
   document.getElementById('texto-tarefa').value = '';
-  const nodeTaskList = document.querySelectorAll('.todo-item');
-  nodeTaskList.forEach(grayBgColor);
+  const tasksToVerifyBGColor = getUpdatedTaskList();
+  tasksToVerifyBGColor.forEach(grayBgColor);
 }
 
-function deleteAllTask() {
-  const toBeClearedTaskList = document.querySelectorAll('.todo-item');
-  for (let i = 0; i < toBeClearedTaskList.length; i += 1) {
-    toBeClearedTaskList[i].remove();
+// Aqui é declarada a função que passa por todos os elementos da lista e os remove.
+function deleteAllTasks() {
+  const toBeDeletedTasks = getUpdatedTaskList();
+  for (let i = 0; i < toBeDeletedTasks.length; i += 1) {
+    toBeDeletedTasks[i].remove();
   }
 }
 
+// Aqui é declarada a função que passa por todos os elementos da lista, e caso verifique que o mesmo contem a classe 'completed', os remove.
 function deleteDoneTasks() {
-  const toBeClearedTaskList = document.querySelectorAll('.todo-item');
-  for (let i = 0; i < toBeClearedTaskList.length; i += 1) {
-    if (toBeClearedTaskList[i].classList.contains('completed')) {
-      toBeClearedTaskList[i].remove();
+  const toBeDeletedDoneTasks = getUpdatedTaskList();
+  for (let i = 0; i < toBeDeletedDoneTasks.length; i += 1) {
+    if (toBeDeletedDoneTasks[i].classList.contains('completed')) {
+      toBeDeletedDoneTasks[i].remove();
     }
   }
 }
 
 newTaskButton.addEventListener('click', addNewTask);
 
-clearTasksButton.addEventListener('click', deleteAllTask);
+clearTasksButton.addEventListener('click', deleteAllTasks);
 
 clearDoneTasksButton.addEventListener('click', deleteDoneTasks);
